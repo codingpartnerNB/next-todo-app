@@ -14,7 +14,8 @@ const TodoForm = (props)=>{
         const description = descriptionRef.current.value;
         const todo = {
             title: title,
-            description: description
+            description: description,
+            status: "incomplete"
         }
         props.onAddTodo(todo);
     }

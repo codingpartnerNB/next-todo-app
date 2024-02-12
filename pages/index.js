@@ -22,6 +22,11 @@ const HomePage = (props)=>{
         router.push('/');
     }
     const deleteTodo = async(todoId)=>{
+        const res = await fetch(`/api/delete-todo?todoId=${todoId}`,{
+            method: 'DELETE'
+        });
+        // console.log(res);
+        router.push('/');
         // setTodos(todos.filter((todo)=>(todo.id !== todoId)));
     }
     const updateTodo = async(id, status)=>{

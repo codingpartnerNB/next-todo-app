@@ -21,7 +21,7 @@ const TodoForm = (props)=>{
     }
 
     return(
-        <section className="w-3/4 m-auto mt-10 border-2 p-8 rounded-lg border-pink-600 bg-pink-100">
+        <section className="w-full m-auto mt-6 border-2 p-8 rounded-lg border-pink-600 bg-pink-100">
             <form onSubmit={submitTodoHandler}>
                 <input type="text" placeholder="Task" ref={titleRef} className="w-full border-2 border-pink-500 bg-pink-100 rounded-lg pl-2 p-1 my-2 focus:outline-none focus:border-2 focus:border-pink-800" required />
                 <input type="text" placeholder="Description" ref={descriptionRef} className="w-full border-2 border-pink-500 bg-pink-100 rounded-lg pl-2 p-1 my-2 focus:outline-none focus:border-2 focus:border-pink-800" required />

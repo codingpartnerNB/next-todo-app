@@ -17,12 +17,27 @@ const HomePage = (props)=>{
                 'Content-Type': 'application/json'
             }
         });
-        console.log(res);
+        // console.log(res);
         setShowTodoForm(false);
         router.push('/');
     }
-    const deleteTodo = (todoId)=>{
+    const deleteTodo = async(todoId)=>{
         // setTodos(todos.filter((todo)=>(todo.id !== todoId)));
+    }
+    const updateTodo = async(id, status)=>{
+        const todoStatus = (status === "incomplete") ? "completed" : "incomplete";
+
+        const res = await fetch(`/api/update-todo?todoId=${id}`,{
+            method: 'PATCH',
+            body: JSON.stringify({
+                status: todoStatus
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        // console.log(res);
+        router.push('/');
     }
     const showFormHandler = ()=>{
         setShowTodoForm(true);
@@ -31,7 +46,10 @@ const HomePage = (props)=>{
         <div className="w-3/6 m-auto my-10">
             <h1 className="font-bold text-3xl text-center text-pink-700">Today</h1>
             <div className="w-3/4 m-auto">
-                <TodoLists todos={props.todos} onDeleteTodo={deleteTodo} />
+                <h2 className="text-xl font-bold text-pink-500 mt-5">Completed Todos</h2>
+                <TodoLists todos={props.completedTodos} onDeleteTodo={deleteTodo} onUpdateTodo={updateTodo} />
+                <h2 className="text-xl font-bold text-pink-500 mt-5">Incompleted Todos</h2>
+                <TodoLists todos={props.incompleteTodos} onDeleteTodo={deleteTodo} onUpdateTodo={updateTodo} />
                 {!showTodoForm && <FaCirclePlus onClick={showFormHandler} className="text-pink-600 my-1 text-3xl cursor-pointer" />}
             </div>
             {showTodoForm && <TodoForm onAddTodo={addTodo} />}
@@ -45,14 +63,22 @@ export async function getStaticProps(){
     const client = await MongoClient.connect('mongodb+srv://nehab:T9DcXVDbTd82KCTP@cluster0.q4j14gt.mongodb.net/todos');
     const db = client.db();
     const todoCollection = db.collection('todosdb');
-    const todos = await todoCollection.find().toArray();
+    const incompleteTodos = await todoCollection.find({status: "incomplete"}).toArray();
+    const completedTodos = await todoCollection.find({status: "completed"}).toArray();
     client.close();
     return {
         props: {
-            todos: todos.map((todo)=>({
+            completedTodos: completedTodos.map((todo)=>({
                 id: todo._id.toString(),
                 title: todo.title,
-                description: todo.description
+                description: todo.description,
+                status: todo.status,
+            })),
+            incompleteTodos: incompleteTodos.map((todo)=>({
+                id: todo._id.toString(),
+                title: todo.title,
+                description: todo.description,
+                status: todo.status,
             }))
         },
         revalidate: 1
